@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 	DTD 파일을 설정한다. -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 	루트 태그를 작성한다. 
+		namespace는 여러개의 xml 파일을 구분하기 위한 유니크한 이름으로
+		설정하면 된다.
+-->
+<mapper namespace="sample">
+	<!-- 	이 안에 필요한 질의 명령을 만들어 나가면 된다. -->
+			
+	<select id="total" resultType="java.lang.Integer">
+	    <if test="_databaseId == 'oracle'">
+  	
+		SELECT
+			COUNT(*) AS TOTAL
+		FROM
+			Member
+    </if>
+    <if test="_databaseId == 'sqlserver'">
+      SELECT
+			10 as TOTAL
+    </if>
+
+	</select>
+</mapper>
