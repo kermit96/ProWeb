@@ -25,7 +25,8 @@ $(document).ready(function() {
 	   $("#test").click(test);
 	   $("#save").click(save);
 	   $("#end").click(myclose);	   
-	   
+	   $("#smtptest").click(smtptest);
+
 	   
 });
 
@@ -33,6 +34,25 @@ $(document).ready(function() {
 function init()
 {
 
+	
+	  $("#stmtport").keydown(function (e) {
+	        // Allow: backspace, delete, tab, escape, enter and .
+	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+	             // Allow: Ctrl+A, Command+A
+	            (e.keyCode == 65 && ( e.ctrlKey === true || e.metaKey === true ) ) || 
+	             // Allow: home, end, left, right, down, up
+	            (e.keyCode >= 35 && e.keyCode <= 40)) {
+	                 // let it happen, don't do anything
+	                 return;
+	        }
+	        // Ensure that it is a number and stop the keypress
+	        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105))) 
+	        {		  
+	            e.preventDefault();
+	        }
+	    });
+	
+	
     $.ajax({
         url:'../Setup/getglobalconfig.do',
         async:false,
@@ -55,6 +75,32 @@ function init()
         
     });
 }
+
+function smtptest()
+{
+	$.ajax({
+        url:'../Setup/smtptest.do',
+        async:false,
+        type:'post',
+        dataType:'html',
+        data:{dbtype:$("#dbselect").val(),
+        	dbname:$("#dbname").val(),
+        	dbuser:$("#dbuser").val(),
+        	dbhost:$("#dbhost").val(),
+        	dbport:$("#dbport").val(),
+        	dbpassword:$("#dbpassword").val(),        
+        },
+        success:function(data){            	
+            $("#result").html(data);
+        },
+        error:function( xhr) {
+        	 alert("An error occured: " + xhr.status + " " + xhr.statusText)
+        }
+        
+    }); 
+}
+
+
 
 function test()
 {
@@ -127,6 +173,8 @@ function myclose()
 <%if (isview)  { %>
   <h1 align="center"> 환경 설정</h1>    <p>
   
+  <h2 align="center"> DB 설정 </h1>    <p> 
+  
   <table align="center">
    <tr> 
       <td>
@@ -189,6 +237,77 @@ function myclose()
       </td>     
    </tr>   
   
+  
+  
+  
+  <tr>
+  <td colspan="2"  align="center">
+    <p>
+      <button id="test"> DB 테스트</button>     
+  </td>
+  </tr>    
+  </table>    
+   <div id="result"  style="color:blue"  align="center"> 
+      
+   </div>
+   
+   
+   <br>
+   <h2 align="center"> SMTP  설정 </h1>    <p> 
+   <table>
+      <tr> 
+        <td>server</td>
+        <td><input type="input"   id="stmthost"  /> </td>
+      </tr>
+      <tr> 
+        <td>port</td>
+        <td><input type="input"   id="stmtport"  /> </td>
+      </tr>
+      
+      <tr>
+      <td>보안 연결 설정  </td>
+        <td>         
+        <input type="radio" name="checkset" id="nosecurity" value="없음" /> 
+        <input type="radio" name="checkset" id="ssl" value="ssl" />
+         <input type="radio" name="checkset" id="tls" value="tls" />        
+        </td>
+      </tr>
+      
+      <tr>
+      <td>smtp userid </td>
+        <td><input type="input"   id="stmtpuserid"  />  </td>
+      </tr>
+      
+      <tr>      
+      <td>smtp password </td>
+        <td><input type="password"   id="stmtppassword"  /> </td>
+      </tr>                
+      
+      
+      <tr> 
+        <td>보내는 사람 E-MAIL</td>
+        <td><input type="input"   id="stmtemail"  /> </td>
+      </tr>
+      
+         <tr> 
+      <td>보내는 사람 이름 </td>
+        <td><input type="input"   id="stmtsender"  /> </td>
+      </tr>        
+
+
+  <td colspan="2"  align="center">
+    <p>
+      <button id="smtptest"> SMTP TEST</button>    <button  id="smtpsave">SMTP 설정 저장</button>  
+  </td>
+           
+   
+   </table>
+   
+    <div id="smtpresult"  style="color:blue"  align="center"> 
+      
+   </div>
+
+<table>
     <tr> 
       <td>
           파일 저장 디렉토리   
@@ -196,20 +315,17 @@ function myclose()
       <td>
        <input type="text"  id="savedir"  value="">   
       </td>     
-   </tr>   
-  
-  
-  <tr>
-  <td colspan="2"  align="center">
-    <p>
-      <button id="test"> 테스트</button>    <button  id="save"> 저장</button> <button id="end"> 끝내기</button> 
-  </td>
-  </tr>    
-  </table>    
-   <div id="result"  style="color:blue"  align="center"> 
+   </tr>     
+</table>
+   <br>
    
-   
+    <div   align="center"> 
+
+       <button  id="save">저장</button>          <button id="end"> 끝내기</button> 
+             
    </div>
+   
+   
          
    <% } else { %>  
        로컬 pc 에서만 실행 할수 있습니다.

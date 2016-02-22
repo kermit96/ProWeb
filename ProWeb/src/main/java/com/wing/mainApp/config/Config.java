@@ -41,8 +41,6 @@ public class Config {
 			   			   
 		   }
 		   
-		  
-		   
 		   int port = config.getPort();
 		   
 		   switch(DBTYPE.fromInt(config.getDbtype())) 
@@ -99,12 +97,11 @@ public class Config {
 	  		 
 	  SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
 	  sqlSessionFactory.setDataSource(datasource);
-	//  sqlSessionFactory.setMapperLocations(mapperLocations);
-	  sqlSessionFactory.setConfigLocation(new ClassPathResource("/com/wing/mainApp/myBatis/myBatis-config.xml"));
+
 	  
+	  sqlSessionFactory.setConfigLocation(new ClassPathResource("/com/wing/mainApp/myBatis/myBatis-config.xml"));	  
 	  sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/com/wing/mainApp/sql/*.xml"));
-	  //configLocation 	  	 
-	  	   
+	  
 	  org.apache.ibatis.mapping.VendorDatabaseIdProvider venderid = new org.apache.ibatis.mapping.VendorDatabaseIdProvider();
 	    
 	   Properties  prof = new Properties();
@@ -113,6 +110,7 @@ public class Config {
 	   prof.setProperty("Oracle", "oracle");
 	   prof.setProperty("MySQL", "mysql");	  
 	   venderid.setProperties(prof);	  
+	   
  	   sqlSessionFactory.setDatabaseIdProvider(venderid);
  	   try {
  		  if (datasource.getUsername().isEmpty()) 

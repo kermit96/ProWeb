@@ -6,6 +6,14 @@ import java.net.SocketException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class util {
 	
@@ -14,6 +22,69 @@ public class util {
 			return GetSha(str,"SHA-512");			   
 	   }
 	    
+	   
+	   
+	  public static  void  SendMail( MailSendInfo info ) throws Exception
+	     { 
+	    	 String to = info.to;
+
+	         // Sender's email ID needs to be mentioned
+	         String from = info.from;
+	         final String username = info.userid;
+	         final String password = info.password;
+
+	         // Assuming you are sending email through relay.jangosmtp.net
+	         String host = info.smtpserver;
+
+	         Properties props = new Properties();
+	         
+	         boolean isauth = true;
+	         if (username.isEmpty())
+	        	 isauth = false;
+	         
+	         props.put("mail.smtp.auth", isauth);
+	         if (info.istls == true)
+	           props.put("mail.smtp.starttls.enable", info.istls);
+	         if (info.isssl == true)
+	           props.put("mail.smtp.ssl.enable", info.isssl);
+	         
+	         props.put("mail.smtp.host", host);
+	         props.put("mail.smtp.port", info.port);
+	 
+
+	         // Get the Session object.
+	         Session session = Session.getInstance(props,
+	         new javax.mail.Authenticator() {
+	            protected PasswordAuthentication getPasswordAuthentication() {
+	               return new PasswordAuthentication(username, password);
+	            }
+	         });
+
+	         
+	            // Create a default MimeMessage object.
+	            Message message = new MimeMessage(session);
+
+	            // Set From: header field of the header.
+	            message.setFrom(new InternetAddress(from,info.fromname,"utf-8"));
+
+	            // Set To: header field of the header.
+	            message.setRecipients(Message.RecipientType.TO,
+	            InternetAddress.parse(to));
+
+	            // Set Subject: header field
+	            message.setSubject(info.subject);
+
+	            // Now set the actual message
+	            message.setText(info.body);
+
+	            message.setHeader("Content-Type", "text/html; charset=\"" + "utf-8" + "\"");
+
+	            // Send message
+	            Transport.send(message);
+
+	     }
+
+	   
 	   
 	   public static String GetSha(String str,String shatype ) 
 	   {
@@ -98,7 +169,35 @@ public class util {
 
 		        }
 		        */
-		        System.out.println("is my ip check=="+IsMyIp("192.168.56.18")); 
+		        System.out.println("is my ip check=="+IsMyIp("192.168.56.18"));
+		        
+		        
+
+		    	 MailSendInfo info = new MailSendInfo();
+		       	 info.port = 465;
+		       	 info.from = "lim-first@daum.net";
+		       	 
+		       	 info.to = "lim-first@daum.net";
+		       	 info.istls = false;
+		       	 info.isssl = true;
+		       	 info.userid = "lim-first";
+		       	 info.password = "im8042270";
+		       	 info.subject = "처음 메일 send";
+		       	 info.body = "body sending 보내기";
+		       	 info.fromname = "관리자";
+		       	 info.smtpserver = "smtp.daum.net";
+		      
+		       	 try {
+		       	    util.SendMail(info);
+		       	    System.out.println("send mail success");
+		       	    		
+		       	 } catch (Exception ex) {
+		       	  ex.printStackTrace();	   
+		       		 
+		       	 }
+		       	 
+
+		        
 		}
 	   
 	   
@@ -107,4 +206,7 @@ public class util {
 			return GetSha(str,"SHA-256");
 							   
    }
+   
+   
+   
 }
