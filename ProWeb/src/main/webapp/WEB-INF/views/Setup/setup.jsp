@@ -68,6 +68,10 @@ function init()
           $("#dbport").val(data.port);
           $("#dbpassword").val(data.password);
           $("#savedir").val(data.savedir);
+          $("#savedir").val(data.savedir);
+          $("#savedir").val(data.savedir);
+          $("#savedir").val(data.savedir);
+          $("#savedir").val(data.savedir);
         },
         error:function( xhr) {
         	 alert("An error occured: " + xhr.status + " " + xhr.statusText)
