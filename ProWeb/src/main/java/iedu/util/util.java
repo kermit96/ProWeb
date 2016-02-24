@@ -15,6 +15,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import iedu.config.Globalconfig;
+
 public class util {
 	
 	   public static  String  GetSha512(String str) {
@@ -22,16 +24,50 @@ public class util {
 			return GetSha(str,"SHA-512");			   
 	   }
 	    
+	 
+	   public static  void  SendMail(String to,String subject,String body ) throws Exception	   
+	   {
+		   MailSendInfo info = new MailSendInfo();
+		   info.to = to;
+		   info.subject = subject;
+		   info.body = body;
+		    
+		   Globalconfig config = new Globalconfig();
+		   info.smtpserver = config.getSmtphost();
+		   info.from  = config.getSmtpemail();
+		   info.fromname = config.getSmtpemail();
+		   info.userid = config.getUserid();
+		   info.password = config.getDbname();
+		   info.port = config.getSmtpport();
+		   
+		   switch(config.getEncryptedmethod())
+		   {
+		     // tls 
+		     case 1:
+		       info.istls = true;
+		       break;
+		   
+		     case 2:
+			       info.isssl = true;
+			       break;
+			   		   
+		   }
+		   
+		   SendMail(info);
+		   
+	   }
 	   
-	   
+	     	  
 	  public static  void  SendMail( MailSendInfo info ) throws Exception
 	     { 
+		  
+		  
 	    	 String to = info.to;
 
 	         // Sender's email ID needs to be mentioned
 	         String from = info.from;
-	         final String username = info.userid;
-	         final String password = info.password;
+	         String username = info.userid;
+	         String password = info.password;
 
 	         // Assuming you are sending email through relay.jangosmtp.net
 	         String host = info.smtpserver;
@@ -169,10 +205,9 @@ public class util {
 
 		        }
 		        */
+		   		   
 		        System.out.println("is my ip check=="+IsMyIp("192.168.56.18"));
-		        
-		        
-
+		        		        
 		    	 MailSendInfo info = new MailSendInfo();
 		       	 info.port = 465;
 		       	 info.from = "lim-first@daum.net";

@@ -115,7 +115,11 @@ public class ConfigFileHandler {
 	 * @return String 해당 key에대한 value를 리턴한다.
 	 */
 	public String getValue(String p_sKey) {
-		return m_oProps.getProperty(p_sKey);
+		String ret =  m_oProps.getProperty(p_sKey);
+		
+		if (ret == null)
+			ret = "";		
+		return ret;
 
 	}
 

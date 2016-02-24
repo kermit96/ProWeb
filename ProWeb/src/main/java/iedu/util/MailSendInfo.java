@@ -6,8 +6,7 @@ public class MailSendInfo {
    public String from;
    public String fromname;
    public String to;
-   public String smtpserver;
-   public int  smtpport;
+   public String smtpserver;   
    public String userid;
    public String password;
    public  boolean istls = false;

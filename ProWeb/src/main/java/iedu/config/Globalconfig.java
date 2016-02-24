@@ -21,6 +21,40 @@ public class Globalconfig {
     private String  host;
     private int    port;
     
+    private int    smtpport;
+    private String smtphost;
+    private String smtpuserid;
+    private String smtppassword;
+    
+    private String  smtpemail;
+    
+    private String  smtpsender;
+    
+    private int    encryptedmethod; // 0 : 없음 1: tls 2: ssl   
+    
+    
+    
+    public String getSmtpemail() {
+		return smtpemail;
+	}
+
+	public void setSmtpemail(String smtpemail) {
+		this.smtpemail = smtpemail;
+		handler.setValue("smtpemail",smtpemail );
+		
+	}
+
+	public String getSmtpsender() {
+		return smtpsender;
+	}
+
+	public void setSmtpsender(String smtpsender) {
+		this.smtpsender = smtpsender;
+		handler.setValue("smtpsender",smtpsender );
+	}
+
+	
+    
     private String savedir;
     
     /** 
@@ -146,6 +180,59 @@ public class Globalconfig {
 	}
 
 
+	public int getSmtpport() {
+		return smtpport;
+	}
+
+	public void setSmtpport(int smtpport) {
+		this.smtpport = smtpport;
+		handler.setValue("smtpport",smtpport );
+	}
+
+	public String getSmtphost() {
+		return smtphost;
+	}
+
+	public void setSmtphost(String smtphost) {
+		this.smtphost = smtphost;
+		handler.setValue("smtphost",smtphost );
+		}
+
+	public String getSmtpuserid() {
+		return smtpuserid;
+	}
+
+	public void setSmtpuserid(String smtpuserid) {
+		this.smtpuserid = smtpuserid;
+		handler.setValue("smtpuserid",smtpuserid );
+	}
+
+	public String getSmtppassword() {
+		return smtppassword;
+	}
+
+	public void setSmtppassword(String smtppassword) {
+		this.smtppassword = smtppassword;
+		handler.setValue("smtppassword",smtppassword );
+	}
+
+	public int getEncryptedmethod() {
+		return encryptedmethod;
+	}
+
+	public void setEncryptedmethod(int encryptedmethod) {
+		this.encryptedmethod = encryptedmethod;
+		handler.setValue("encryptedmethod",encryptedmethod );
+	}
+
+	public ConfigFileHandler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(ConfigFileHandler handler) {
+		this.handler = handler;
+	}
+
 	public void Save()
 	{
 		handler.Save();
@@ -185,6 +272,34 @@ public class Globalconfig {
 			 dbtype =0;
 		 }
 		 
+		
+		 
+		 try {
+			   this.smtpport = Integer.parseInt( handler.getValue("smtpport"));		
+			 } catch (Exception ex) {
+				 smtpport =0;
+		 }
+			 
+		
+ 	    this.smtphost = handler.getValue("smtphost");		
+       	
+ 	    this.smtpuserid = handler.getValue("smtpuserid");
+ 	   
+ 	    this.smtppassword = handler.getValue("smtppassword");
+
+ 	   
+ 	    this.smtpemail = handler.getValue("smtpemail");
+ 	  
+ 	    this.smtpsender= handler.getValue("smtpsender");
+ 	   
+		 
+ 		 try {
+			   this.encryptedmethod = Integer.parseInt( handler.getValue("encryptedmethod"));		
+			 } catch (Exception ex) {
+				 encryptedmethod =0;
+		 }
+ 	   
+		 		 
 		 savedir = handler.getValue("savedir");
 		 if (savedir == null)
 			 savedir = "";

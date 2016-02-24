@@ -18,8 +18,13 @@
 <title>Insert title here</title>
 <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"> </script>
 <script>
+
+
+
 <%if (isview)  { %> 
 $(document).ready(function() {
+	
+
 	  // 처음 설정 항목을 가져온다.
 	  init();
 	   $("#test").click(test);
@@ -34,7 +39,7 @@ $(document).ready(function() {
 function init()
 {
 
-	
+    /*	
 	  $("#stmtport").keydown(function (e) {
 	        // Allow: backspace, delete, tab, escape, enter and .
 	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
@@ -52,6 +57,24 @@ function init()
 	        }
 	    });
 	
+	*/
+	
+	 $("#stmtport").keydown(function (e) {
+	        // Allow: backspace, delete, tab, escape, enter and .
+	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+	             // Allow: Ctrl+A, Command+A
+	            (e.keyCode == 65 && ( e.ctrlKey === true || e.metaKey === true ) ) || 
+	             // Allow: home, end, left, right, down, up
+	            (e.keyCode >= 35 && e.keyCode <= 40)) {
+	                 // let it happen, don't do anything
+	                 return;
+	        }
+	        // Ensure that it is a number and stop the keypress
+	        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+	            e.preventDefault();
+	        }
+	    });
+	
 	
     $.ajax({
         url:'../Setup/getglobalconfig.do',
@@ -60,17 +83,40 @@ function init()
         dataType:'json',
         success:function(data){
         	
-   
+       
           $("#dbname").val(data.dbname);
           $("#dbselect").val(data.dbtype);
           $("#dbuser").val(data.userid);
           $("#dbhost").val(data.host);
           $("#dbport").val(data.port);
           $("#dbpassword").val(data.password);
-          $("#savedir").val(data.savedir);
-          $("#savedir").val(data.savedir);
-          $("#savedir").val(data.savedir);
-          $("#savedir").val(data.savedir);
+          
+          $("#smtpport").val(data.smtpport);
+          $("#smtphost").val(data.smtphost);
+          $("#smtpuserid").val(data.smtpuserid);
+          $("#smtppassword").val(data.smtppassword);
+          
+          $("#smtpemail").val(data.smtpemail);
+          $("#smtpsender").val(data.smtpsender);
+          
+          
+          switch(data.encryptedmethod )
+          {
+             case 0:
+            	 $("#nosecurity").attr('checked', 'checked');
+            	 nosecurity
+            	   break;
+             case 1:
+            	 $("#tls").attr('checked', 'checked');
+          	   break;
+        
+             case 2:
+            	 $("#ssl").attr('checked', 'checked');
+          	   break;
+        
+          }
+          
+          
           $("#savedir").val(data.savedir);
         },
         error:function( xhr) {
@@ -82,20 +128,22 @@ function init()
 
 function smtptest()
 {
+	var encryted = $('input:radio[name="checkset"]:checked').val();
 	$.ajax({
         url:'../Setup/smtptest.do',
         async:false,
         type:'post',
         dataType:'html',
-        data:{dbtype:$("#dbselect").val(),
-        	dbname:$("#dbname").val(),
-        	dbuser:$("#dbuser").val(),
-        	dbhost:$("#dbhost").val(),
-        	dbport:$("#dbport").val(),
-        	dbpassword:$("#dbpassword").val(),        
+        data:{smtpport:$("#smtpport").val(),
+        	smtphost:$("#smtphost").val(),
+        	smtpuserid:$("#smtpuserid").val(),
+        	smtppassword:$("#smtppassword").val(),
+        	smtpemail:$("#smtpemail").val(),
+        	smtpsender:$("#smtpsender").val(),
+        	encryptedmethod:encryted,
         },
         success:function(data){            	
-            $("#result").html(data);
+            $("#smtpresult").html(data);
         },
         error:function( xhr) {
         	 alert("An error occured: " + xhr.status + " " + xhr.statusText)
@@ -133,6 +181,9 @@ function test()
 
 function save()
 {
+	
+	var encryted = $('input:radio[name="checkset"]:checked').val();
+    try {
 	$.ajax({
         url:'../Setup/globalsave.do',
         async:false,
@@ -143,10 +194,17 @@ function save()
         	dbuser:$("#dbuser").val(),
         	dbhost:$("#dbhost").val(),
         	dbport:$("#dbport").val(),
-        	dbpassword:$("#dbpassword").val(),
-        	savedir:$("#savedir").val(),
-        
+        	dbpassword:$("#dbpassword").val(),        	
+        	smtphost:$("#smtphost").val(),        	
+        	smtpport:$("#smtpport").val(),        	
+        	smtpuserid:$("#smtpuserid").val(),
+        	smtppassword:$("#smtppassword").val(),
+        	smtpemail:$("#smtpemail").val(),
+        	smtpsender:$("#smtpsender").val(),        	
+        	encryptedmethod:encryted,        	
+        	savedir:$("#savedir").val(),        
         },
+        
         success:function(data){            	
             alert("저장했습니다.\n tomcat server 를 재 시작하기기 바랍니다.");
         },
@@ -154,6 +212,12 @@ function save()
         	 alert("An error occured: " + xhr.status + " " + xhr.statusText)
         }        
     }); 	
+	
+    } catch (ex) {
+    	
+    	alert(ex);
+    }
+ 
 }
 
 
@@ -258,50 +322,50 @@ function myclose()
    
    <br>
    <h2 align="center"> SMTP  설정 </h1>    <p> 
-   <table>
+   <table align="center">
       <tr> 
         <td>server</td>
-        <td><input type="input"   id="stmthost"  /> </td>
+        <td><input type="text"   id="smtphost"  /> </td>
       </tr>
       <tr> 
         <td>port</td>
-        <td><input type="input"   id="stmtport"  /> </td>
+        <td><input type="text"   id="smtpport"  /> </td>
       </tr>
       
       <tr>
       <td>보안 연결 설정  </td>
         <td>         
-        <input type="radio" name="checkset" id="nosecurity" value="없음" /> 
-        <input type="radio" name="checkset" id="ssl" value="ssl" />
-         <input type="radio" name="checkset" id="tls" value="tls" />        
+        <input type="radio" name="checkset" id="nosecurity" value="0" >없음 
+        <input type="radio" name="checkset" id="ssl" value="2" />SSL
+         <input type="radio" name="checkset" id="tls" value="1" />TLS        
         </td>
       </tr>
       
       <tr>
       <td>smtp userid </td>
-        <td><input type="input"   id="stmtpuserid"  />  </td>
+        <td><input type="text"   id="smtpuserid"  />  </td>
       </tr>
       
       <tr>      
       <td>smtp password </td>
-        <td><input type="password"   id="stmtppassword"  /> </td>
+        <td><input type="password"   id="smtppassword"  /> </td>
       </tr>                
       
       
       <tr> 
         <td>보내는 사람 E-MAIL</td>
-        <td><input type="input"   id="stmtemail"  /> </td>
+        <td><input type="input"   id="smtpemail"  /> </td>
       </tr>
       
          <tr> 
       <td>보내는 사람 이름 </td>
-        <td><input type="input"   id="stmtsender"  /> </td>
+        <td><input type="input"   id="smtpsender"  /> </td>
       </tr>        
 
 
   <td colspan="2"  align="center">
     <p>
-      <button id="smtptest"> SMTP TEST</button>    <button  id="smtpsave">SMTP 설정 저장</button>  
+      <button id="smtptest"> SMTP TEST</button>      
   </td>
            
    
@@ -311,7 +375,7 @@ function myclose()
       
    </div>
 
-<table>
+<table align="center">
     <tr> 
       <td>
           파일 저장 디렉토리   
@@ -328,7 +392,7 @@ function myclose()
        <button  id="save">저장</button>          <button id="end"> 끝내기</button> 
              
    </div>
-   
+ 
    
          
    <% } else { %>  
@@ -336,5 +400,7 @@ function myclose()
 <%} %>
 
 </body>
+  <script>
 
+   </script>
 </html>
