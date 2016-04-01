@@ -94,10 +94,9 @@ public class AlarmSystemDao {
 		 * 설정한 온도 데이터를 추가하는 SQL 쿼리
 		 **/
 		String query = "INSERT INTO temperature(no,temp_from, "
-				+ " temp_to, input_date) VALUES( (select nvl(max(no),1)+1 from temperature),  ?, ?, sysdate)";
+				+ " temp_to, input_date) VALUES( (select nvl(max(no),0)+1 from temperature),  ?, ?, sysdate)";
 		
-		System.out.println("insert query="+query);
-		
+
 		try {
 			/* DBManager를 이용해 DB 커넥션 풀에서
 			 * 활성화된 Connection 객체를 구한다.
@@ -135,8 +134,9 @@ public class AlarmSystemDao {
 		/* DB의 temperature 테이블에서 가장 최근에
 		 * 설정된 온도 데이터를 읽어 오는 SQL 쿼리
 		 **/
-		String query = "SELECT * FROM temperature "
-				+ " where rownum=1   ORDER BY input_date DESC ";
+		String query ="select * from  (SELECT *  FROM temperature " +  
+			    " ORDER BY input_date DESC) where rownum=1";
+			    
 		
 		/* 가장 최신에 설정된 온도 정보를 담을
 		 * Temperature 타입의 변수를 선언

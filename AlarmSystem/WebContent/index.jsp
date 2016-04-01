@@ -21,67 +21,77 @@
 	</style>
 	<script src="js/jquery-2.1.4.min.js"></script>
 	<script>
-	
-	
+		
 		$(document).ready(function() {
-		
-			 
-		
-			
+	
 			$("#refresh").click(function() {	
-				try {
-		
-				// 아두이노 웹 서버의 IP 주소 지정   
-				$.get("http://192.168.56.153:80", function(data) {
-		
-					 
-					$("#readTemp").text(data.split(",")[1]);
-					$("#result").text(data.split(",")[0]);
-					
-					 var start = ${temp.tempFrom};
-					 var end = ${temp.tempTo};
-					
-					console.log(start + ", " + end + ", " + data);
-					var temp = data.split(" : ")[1].split("℃")[0];					
-					
-					if(start > temp || end < temp) {						
-						$("#warning").css("background-color", "red")
-							.css("color", "white").text("현재 온도 상태 >> 경고"); 
-					} else {
-						$("#warning").css("background-color", "blue")
-						.css("color", "white").text("현재 온도 상태 >> 양호");
-					} 
-					
-				});
-			
-				} catch (ex) {
-					
-					 alert(ex);
-				}
-			
+							
+				// 아두이노 웹 서버의 IP 주소 지정
+							
+    			$.ajax({
+    			     url:'http://192.168.56.153:80',
+    			        async:true,
+    			        type:'post',
+    			        dataType:'html',
+    			        success:function(data){    				        	
+    				    		$("#readTemp").text(data.split(",")[1]);
+    		   					$("#result").text(data.split(",")[0]);
+    	    					var start = ${temp.tempFrom};
+    	    					var end = ${temp.tempTo};
+    	    					console.log(start + ", " + end + ", " + data);
+    	    					var temp = data.split(" : ")[1].split("℃")[0];					
+    	    					
+    	    					if(start > temp || end < temp) {						
+    	    						$("#warning").css("background-color", "red")
+    	    							.css("color", "white").text("현재 온도 상태 >> 경고"); 
+    	    					} else {
+    	    						$("#warning").css("background-color", "blue")
+    	    						.css("color", "white").text("현재 온도 상태 >> 양호");
+    	    					}
+    	        		
+    				        },
+    				        error:function( xhr) {
+    				        	 alert("An error occured: " + xhr.status + " " + xhr.statusText)
+    				        }
+    				 
+    });
+							
 			}
 			
 			);
 	
 			var timer = setInterval(function() {
-		
-				// 아두이노 웹 서버 IP 주소 지정
-				$.get("http://192.168.56.153:80", function(data) {
-					$("#readTemp").text(data.split(",")[1]);
-					$("#result").text(data.split(",")[0]);
-					var start = ${temp.tempFrom};
-					var end = ${temp.tempTo};
-					console.log(start + ", " + end + ", " + data);
-					var temp = data.split(" : ")[1].split("℃")[0];					
-					
-					if(start > temp || end < temp) {						
-						$("#warning").css("background-color", "red")
-							.css("color", "white").text("현재 온도 상태 >> 경고"); 
-					} else {
-						$("#warning").css("background-color", "blue")
-						.css("color", "white").text("현재 온도 상태 >> 양호");
-					}
-				});
+				
+    			$.ajax({
+    			     url:'http://192.168.56.153:80',
+    			        async:true,
+    			        type:'post',
+    			        dataType:'html',
+    			        success:function(data){    				        	
+    				    		$("#readTemp").text(data.split(",")[1]);
+    		   					$("#result").text(data.split(",")[0]);
+    	    					var start = ${temp.tempFrom};
+    	    					var end = ${temp.tempTo};
+    	    					console.log(start + ", " + end + ", " + data);
+    	    					var temp = data.split(" : ")[1].split("℃")[0];					
+    	    					
+    	    					if(start > temp || end < temp) {						
+    	    						$("#warning").css("background-color", "red")
+    	    							.css("color", "white").text("현재 온도 상태 >> 경고"); 
+    	    					} else {
+    	    						$("#warning").css("background-color", "blue")
+    	    						.css("color", "white").text("현재 온도 상태 >> 양호");
+    	    					}
+    	        		
+    				        },
+    				        error:function( xhr) {
+    				        	 alert("An error occured: " + xhr.status + " " + xhr.statusText)
+    				        }
+    				 
+ 			   });
+				
+				
+				
 			}, 3000);
 			
 			$("#autoRefresh").click(function() {				
