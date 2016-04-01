@@ -1,0 +1,14 @@
+package com.wing.mainApp.test;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class mytestcase {
+
+	@Test
+	public void test() {
+		fail("Not yet implemented");
+	}
+
+}

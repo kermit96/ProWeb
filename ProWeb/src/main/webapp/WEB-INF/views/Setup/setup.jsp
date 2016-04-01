@@ -392,9 +392,7 @@ function myclose()
        <button  id="save">저장</button>          <button id="end"> 끝내기</button> 
              
    </div>
- 
-   
-         
+
    <% } else { %>  
        로컬 pc 에서만 실행 할수 있습니다.
 <%} %>
